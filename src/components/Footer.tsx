@@ -43,6 +43,34 @@ export default function Footer() {
               </motion.div>
             ))}
           </div>
+
+          <nav
+            aria-label="Sister projects"
+            className="mt-8 pt-5 border-t border-white/10 flex flex-wrap justify-center items-center gap-x-5 gap-y-2 text-[11px]"
+          >
+            <span className="font-mono uppercase tracking-wide text-text-muted">Explore more</span>
+            <a
+              href="https://lit-buy-spreadsheet.com"
+              rel="noopener"
+              className="font-mono uppercase text-text-secondary hover:text-accent transition-colors"
+            >
+              LitBuy main spreadsheet
+            </a>
+            <a
+              href="https://kakobuy-spreadsheet.com"
+              rel="noopener"
+              className="font-mono uppercase text-text-secondary hover:text-accent transition-colors"
+            >
+              KakoBuy picks
+            </a>
+            <a
+              href="https://oopbuysheet.com"
+              rel="noopener"
+              className="font-mono uppercase text-text-secondary hover:text-accent transition-colors"
+            >
+              OOPBuy finds
+            </a>
+          </nav>
         </div>
       </footer>
     </FadeIn>
