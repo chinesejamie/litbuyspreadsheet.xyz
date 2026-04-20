@@ -1,0 +1,109 @@
+@import "tailwindcss";
+
+@theme {
+  /* LitBuy brand palette — gold/yellow accent on deep near-black */
+  --color-bg-primary: #0a0a0f;
+  --color-bg-secondary: #111117;
+  --color-bg-card: #16161e;
+  --color-bg-elevated: #1d1d27;
+  --color-accent: #ffe34d;
+  --color-accent-hover: #fff175;
+  --color-accent-dim: #e6c939;
+  --color-accent-glow: rgba(255, 227, 77, 0.18);
+  --color-accent-fg: #0a0a0f;
+  --color-border: #252534;
+  --color-border-light: #2e2e3f;
+  --color-glass: rgba(10, 10, 15, 0.85);
+  --color-glass-border: rgba(255, 227, 77, 0.08);
+  --color-text-muted: #606075;
+  --color-text-secondary: #a5a5bc;
+  --font-sans: "Space Grotesk", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", "Courier New", monospace;
+}
+
+@font-face {
+  font-family: "Space Grotesk";
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url("https://fonts.gstatic.com/s/spacegrotesk/v16/V8mQoQDjQSkFtoMM3T6r8E7mF71Q-gOoraIAEj7oUXskPMBBSSJLm2E.woff2")
+    format("woff2");
+}
+
+@font-face {
+  font-family: "JetBrains Mono";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("https://fonts.gstatic.com/s/jetbrainsmono/v20/tDbY2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKxTOlOV.woff2")
+    format("woff2");
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--color-bg-primary);
+  color: white;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: rgba(255, 227, 77, 0.3);
+  color: var(--color-accent-fg);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-bg-primary);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-bg-elevated);
+  border-radius: 2px;
+}
+
+/* Hide scrollbar on horizontal scroll containers */
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Shimmer animation for loading skeletons */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.shimmer {
+  background: linear-gradient(90deg, var(--color-bg-card) 25%, var(--color-bg-elevated) 50%, var(--color-bg-card) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Pulse animation for notifications */
+@keyframes pulse-ring {
+  0% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+
+/* Focus visible glow */
+*:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}

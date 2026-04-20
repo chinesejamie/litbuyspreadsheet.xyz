@@ -1,0 +1,13 @@
+node_modules/
+.next/
+.nuxt/
+.output/
+dist/
+out/
+build/
+.env
+.env.local
+.env*.local
+*.pem
+*.key
+.DS_Store

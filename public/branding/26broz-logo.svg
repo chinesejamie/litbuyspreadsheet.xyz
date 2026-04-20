@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <rect width="200" height="200" fill="#000000"/>
+  <g transform="translate(20, 45)">
+    <!-- Stylized "2" -->
+    <path d="M10 35 Q10 5, 45 5 Q75 5, 75 30 Q75 50, 40 70 L10 95 L80 95 L80 110 L0 110 L0 95 Q0 80, 35 60 Q60 45, 60 30 Q60 18, 45 18 Q28 18, 25 35 Z" fill="#ff2020"/>
+    <!-- Stylized "6" merged with dynamic slash -->
+    <path d="M120 5 L95 55 Q88 70, 88 85 Q88 110, 115 110 Q142 110, 142 85 Q142 65, 120 65 Q108 65, 103 75 L115 30 Z M105 85 Q105 75, 115 75 Q125 75, 125 85 Q125 97, 115 97 Q105 97, 105 85 Z" fill="#ff2020"/>
+    <!-- Dynamic slash overlay -->
+    <path d="M70 0 L85 0 L55 115 L40 115 Z" fill="#000000" opacity="0.9"/>
+  </g>
+</svg>
