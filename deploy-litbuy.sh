@@ -107,8 +107,11 @@ echo ""
 echo -e "${YELLOW}📤 Step 4: Uploading to server...${NC}"
 ssh -i "$SSH_KEY" root@"$SERVER_IP" "mkdir -p $REMOTE_DIR"
 
-rsync -avz --progress -e "ssh -i $SSH_KEY" \
+rsync -avz --progress -e "ssh -i \"$SSH_KEY\"" \
   --delete \
+  --exclude=.env \
+  --exclude=logs \
+  --exclude=node_modules \
   --exclude 'public/uploads' \
   "$TEMP_DIR"/ root@"$SERVER_IP":"$REMOTE_DIR"/
 
