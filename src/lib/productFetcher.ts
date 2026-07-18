@@ -277,24 +277,47 @@ export async function getProductBySlug(slug: string): Promise<ProductLite | null
 
     // Stored names in `productList` often mix CJK characters with English —
     // for example "Owala保温杯大容量 (25)" slugifies to "owala-25". A strict
-    // regex over the full name won't match, so we narrow the query to any
-    // product containing the first slug token (case-insensitive), then
-    // disambiguate on the JS side using the same slugify pipeline the UI
-    // uses (which first strips CJK via cleanDisplayName).
+    // regex over the full name won't match, so we narrow the query with a
+    // regex per slug token (every token is an alphanumeric run taken from the
+    // CJK-stripped name, so it also appears in the raw name case-insensitively)
+    // and then disambiguate on the JS side using the same slugify pipeline the
+    // UI uses. Requiring ALL tokens keeps the candidate set tiny even for very
+    // common first tokens like "nike" — the previous first-token-only query
+    // with .limit(200) dropped the newest matches (highest _id) for such tokens
+    // and 404'd their detail pages.
     const escape = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    const firstToken = escape(tokens[0]);
+    const tokenRegexes = tokens.map((t) => new RegExp(escape(t), "i"));
 
-    const candidates = await FindsProduct.find({
+    const disambiguate = (docs: unknown[]) =>
+      (docs as unknown[]).map(serializeProduct).find((p) => p.slug === slug) ??
+      null;
+
+    // Primary: every token must appear in the name. Sort newest-first so that,
+    // in the rare case the narrowed set still exceeds the cap, recent products
+    // (the ones most likely to be linked) are kept.
+    const allTokenMatches = await FindsProduct.find({
       hidden: { $ne: true },
-      name: new RegExp(firstToken, "i"),
+      $and: tokenRegexes.map((rx) => ({ name: rx })),
     })
+      .sort({ _id: -1 })
       .limit(200)
       .lean();
 
-    const match = (candidates as unknown[])
-      .map(serializeProduct)
-      .find((p) => p.slug === slug);
+    let match = disambiguate(allTokenMatches);
+    if (match) return match;
 
+    // Fallback: some tokens may not survive the slugify transform literally
+    // (accents, "&" → "and", etc.). Retry on the first token alone, still
+    // newest-first and with a higher cap so recent products aren't dropped.
+    const firstTokenMatches = await FindsProduct.find({
+      hidden: { $ne: true },
+      name: tokenRegexes[0],
+    })
+      .sort({ _id: -1 })
+      .limit(500)
+      .lean();
+
+    match = disambiguate(firstTokenMatches);
     return match ?? null;
   } catch (err) {
     console.error("[productFetcher] getProductBySlug failed:", err);

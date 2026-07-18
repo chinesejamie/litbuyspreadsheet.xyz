@@ -3,6 +3,8 @@ import { absoluteUrl } from "@/lib/seo";
 import dbConnect from "@/lib/mongodb";
 import FindsProduct from "@/models/FindsProduct";
 import { serializeProduct } from "@/lib/productFetcher";
+import { OUTFIT_GUIDES } from "@/content/outfits";
+import { TUTORIAL_PAGES } from "@/content/tutorials";
 
 // Revalidate sitemap every 24h so new products get picked up without a full rebuild
 export const revalidate = 86400;
@@ -86,11 +88,31 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
     {
       url: absoluteUrl("/tutorial"),
-      lastModified: new Date("2026-04-01"),
+      lastModified: new Date("2026-04-28"),
       changeFrequency: "monthly",
-      priority: 0.5,
+      priority: 0.7,
+    },
+    {
+      url: absoluteUrl("/outfits"),
+      lastModified: new Date("2026-04-28"),
+      changeFrequency: "weekly",
+      priority: 0.85,
     },
   ];
+
+  const outfitRoutes: MetadataRoute.Sitemap = OUTFIT_GUIDES.map((g) => ({
+    url: absoluteUrl(`/outfits/${g.slug}`),
+    lastModified: new Date("2026-04-28"),
+    changeFrequency: "monthly" as const,
+    priority: 0.8,
+  }));
+
+  const tutorialRoutes: MetadataRoute.Sitemap = TUTORIAL_PAGES.map((p) => ({
+    url: absoluteUrl(`/tutorial/${p.slug}`),
+    lastModified: new Date("2026-04-28"),
+    changeFrequency: "monthly" as const,
+    priority: 0.75,
+  }));
 
   const products = await getProductSlugs();
   const productRoutes: MetadataRoute.Sitemap = products.map(
@@ -100,5 +122,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })
   );
 
-  return [...staticRoutes, ...productRoutes];
+  return [...staticRoutes, ...outfitRoutes, ...tutorialRoutes, ...productRoutes];
 }

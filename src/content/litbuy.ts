@@ -2,22 +2,27 @@
 // Both visible DOM and JSON-LD schema builders read from these constants
 // so schema and content can never drift apart.
 
-export const LITBUY_LAST_UPDATED = "2026-04-08"; // ISO date used in WebPage schema + visible footer
+export const LITBUY_LAST_UPDATED = "2026-04-28"; // ISO date used in WebPage schema + visible footer
 export const LITBUY_AUTHOR = "Miki";
 export const LITBUY_PRODUCT_COUNT = "10,000+";
-export const LITBUY_REVIEW_RATING = "4.4";
-export const LITBUY_REVIEW_COUNT = "334";
+// REVIEW_RATING / REVIEW_COUNT removed: previously held fabricated AggregateRating
+// numbers that risked a Google manual action. Replace with real Trustpilot data
+// when available.
 
 // ----------------------- HERO -----------------------
 
+// Positioned as the editorial / guide companion to lit-buy-spreadsheet.com.
+// Avoids competing for the bare "litbuy spreadsheet" head term — that page
+// goes to the database site. Here we target informational + outfit + tutorial
+// intent.
 export const LITBUY_HERO = {
-  heading: "LitBuy Spreadsheet 2026",
-  subheading: "The Complete Guide to Finds, Links & How to Buy",
+  heading: "LitBuy Reps Guide 2026",
+  subheading: "Outfits, Tutorials & Curated Finds",
   lede:
-    "Everything you need to know about the LitBuy Spreadsheet in one place. Browse 10,000+ verified product links, trending brands, trusted shipping agents, quality control tips and a step-by-step ordering tutorial. Updated for 2026.",
-  primaryCtaLabel: "Browse All Finds",
-  primaryCtaHref: "/litbuy-spreadsheet",
-  secondaryCtaLabel: "Get 70% Shipping Coupon",
+    "The editorial companion to the LitBuy Spreadsheet. Outfit guides, step-by-step tutorials and curated finds for shopping reps from Taobao, 1688 and Weidian — written for English-speaking shoppers in 2026.",
+  primaryCtaLabel: "Browse Outfits",
+  primaryCtaHref: "/outfits",
+  secondaryCtaLabel: "Read the Tutorial",
 };
 
 // ----------------------- WHAT IS -----------------------
@@ -227,7 +232,7 @@ export const LITBUY_COMPARISON = {
     },
     {
       feature: "Community reviews",
-      litbuy: `Trustpilot ${LITBUY_REVIEW_RATING}/5 (${LITBUY_REVIEW_COUNT} reviews)`,
+      litbuy: "Active Discord + Reddit communities",
       pandabuy: "Trustpilot 4.5/5",
       kakobuy: "Trustpilot 4.2/5",
       cssbuy: "Trustpilot 4.0/5",
@@ -378,31 +383,15 @@ export const LITBUY_TRUST_SIGNALS = {
   authorBio:
     "Curated by Miki — rep buying since 2023, reviewed thousands of LitBuy Spreadsheet finds across every major category.",
   stats: [
-    { label: "Verified products indexed", value: LITBUY_PRODUCT_COUNT },
-    { label: "Trustpilot rating", value: `${LITBUY_REVIEW_RATING}/5` },
-    { label: "Trustpilot reviews", value: LITBUY_REVIEW_COUNT },
+    { label: "Products indexed", value: LITBUY_PRODUCT_COUNT },
+    { label: "Marketplaces", value: "3" },
+    { label: "Currencies", value: "11" },
     { label: "Last updated", value: "April 2026" },
   ],
-  testimonials: [
-    {
-      quote:
-        "The LitBuy Spreadsheet was a game-changer. I ordered a full Essentials set through LitBuy, QC came back perfect and shipping took five days. Never going back to buying retail.",
-      author: "Jane D.",
-      context: "First-time shopper",
-    },
-    {
-      quote:
-        "I have been rep buying for years. The LitBuy Spreadsheet has the cleanest product list I have seen — way less dead links than the old PandaBuy sheet. And the search tool on this site is the only reason I stopped using raw Google Sheets.",
-      author: "Mike S.",
-      context: "Experienced rep buyer",
-    },
-    {
-      quote:
-        "Converted a friend to LitBuy and he built a 400 euro haul in a single afternoon. The step-by-step guide on this page is exactly what I wish I had when I started.",
-      author: "Alex T.",
-      context: "Community member",
-    },
-  ],
+  // Testimonials removed: previously held fabricated quotes that risked an
+  // E-E-A-T downgrade. Replace with screenshotted Reddit/Discord quotes
+  // (with permission) or Trustpilot embeds when available.
+  testimonials: [] as Array<{ quote: string; author: string; context: string }>,
 };
 
 // ----------------------- FAQ (drives FAQPage schema) -----------------------
@@ -431,7 +420,7 @@ export const LITBUY_FAQ: Array<{ question: string; answer: string }> = [
   {
     question: "Is the LitBuy Spreadsheet safe and legit?",
     answer:
-      "Yes, when used correctly. The LitBuy Spreadsheet has a Trustpilot rating of 4.4/5 across 334 reviews and holds a perfect ScamAdviser trust score. The key is to always approve QC photos before shipping, avoid sellers with poor ratings and start with a small test order of 20–50 USD before placing a larger haul. Linking through established shopping agents like LitBuy adds an extra layer of buyer protection.",
+      "Yes, when used correctly. The key is to always approve QC photos before shipping, avoid sellers with poor ratings and start with a small test order of 20–50 USD before placing a larger haul. Linking through established shopping agents like LitBuy adds an extra layer of buyer protection.",
   },
   {
     question: "How do I buy items from the LitBuy Spreadsheet?",
@@ -514,22 +503,27 @@ export const LITBUY_PAGE = {
   ],
 };
 
+// Keywords reframed for the editorial / guide positioning. Removed bare
+// "litbuy spreadsheet" as primary target — that keyword goes to the database
+// site (lit-buy-spreadsheet.com) which is winning it. Here we own informational
+// + outfit + tutorial intent.
 export const LITBUY_KEYWORDS = [
-  "litbuy spreadsheet",
-  "litbuy spreadsheet 2026",
-  "litbuy spreadsheet link",
-  "litbuy sheet",
-  "litbuy reps",
-  "litbuy litbuy",
-  "litbuy pandabuy",
-  "litbuy kakobuy",
-  "litbuy cssbuy",
-  "litbuy shopping agent",
+  "litbuy reps guide",
   "litbuy guide",
+  "litbuy tutorial",
   "litbuy how to",
-  "best litbuy finds",
+  "how to use litbuy",
+  "how to order from litbuy",
+  "litbuy reps",
+  "rep fashion outfits",
+  "rep streetwear outfits",
+  "rep techwear outfits",
+  "y2k reps outfit",
+  "old money reps",
+  "minimalist rep outfit",
+  "qc photos guide",
+  "taobao buying guide",
+  "weidian buying guide",
+  "litbuy shopping agent",
   "litbuy alternatives",
-  "taobao spreadsheet",
-  "weidian spreadsheet",
-  "rep fashion spreadsheet",
 ];

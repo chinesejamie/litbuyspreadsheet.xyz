@@ -231,28 +231,19 @@ export function itemListSchema(
     brand?: string;
   }[]
 ): object {
+  // Use plain ListItem (not nested Product) so Google doesn't evaluate each
+  // item as a Product Rich Result or Merchant Listing — those checks demand
+  // fields like aggregateRating, review, shippingDetails, hasMerchantReturnPolicy
+  // that we cannot legitimately claim. Plain ListItems still provide the list
+  // semantics for navigation/index purposes.
   return {
     "@context": "https://schema.org",
     "@type": "ItemList",
     itemListElement: products.map((p, i) => ({
       "@type": "ListItem",
       position: i + 1,
-      item: {
-        "@type": "Product",
-        name: p.name,
-        url: p.url,
-        ...(p.image ? { image: absoluteUrl(p.image) } : {}),
-        ...(p.brand
-          ? { brand: { "@type": "Brand", name: p.brand } }
-          : {}),
-        offers: {
-          "@type": "Offer",
-          price: p.price ?? 0,
-          priceCurrency: "USD",
-          availability: "https://schema.org/InStock",
-          seller: { "@type": "Organization", name: SITE_NAME },
-        },
-      },
+      url: p.url,
+      name: p.name,
     })),
   };
 }

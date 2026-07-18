@@ -1,12 +1,13 @@
 # SEO Memory
 
 ## Globale Strategie
-- Primary Domain: https://findz.st (SITE_URL env: `NEXT_PUBLIC_SITE_URL`)
-- Zielmarkt: DE/EU/US rep-buying community
-- Sprachen: English (en_US, `<html lang="en">`)
+- Primary Domain: https://litbuyspreadsheet.xyz (SITE_URL env: `NEXT_PUBLIC_SITE_URL`)
+- Zielmarkt: DE/EU/US/BR/IN rep-buying community (BR/UK biggest impression markets per 2026-04-28 GSC)
+- Sprachen: English (en_US, `<html lang="en">`); DE/PL Lokalisierung in Sprint P1 geplant
 - Brand name in metadata: `LitBuy Spreadsheet` (rebranded from FINDZ per 2026-04-08 decision)
 - Author / E-E-A-T: Miki
 - Last global content refresh: 2026-04-08
+- Long-Tail-Strategie ab 2026-04-28: Brand-Reps-Cluster `/brands/[slug]` + 5-Article-Core + Comparison-Pages — siehe `.claude/history/architecture.md`
 
 ## Seiten-Keywords
 

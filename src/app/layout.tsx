@@ -10,8 +10,8 @@ import { SITE_URL } from "@/lib/seo";
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "LitBuy Spreadsheet 2026 — Finds, Links & Buying Guide",
-    template: "%s | LitBuy Spreadsheet",
+    default: "LitBuy Reps Guide 2026 — Outfits, Tutorials & Curated Finds",
+    template: "%s | LitBuy Reps Guide",
   },
   icons: {
     icon: "/icon",
