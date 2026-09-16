@@ -110,4 +110,6 @@ agent", "litbuy vs X" etc. — nicht "litbuy spreadsheet". Neue Strategie:
 
 **Verifikation:** `tsc` sauber; `next build --webpack` ok; lokaler `next start` gegen echte DB per SSH-Tunnel (Port 27117): alle Routen 200/404 korrekt, Produktseite `noindex, follow`, Kategorieseite ~976 Wörter + 24 Produktlinks, GA-Tag im HTML, Footer nur ein nofollow-Extern-Link.
 
-**Nicht gemacht:** Deploy (wartet auf Freigabe), Lighthouse, GSC-Check der .xyz.
+**Deploy 16.09.2026:** manuell, weil das Skript-rsync auf diesem Mac abbricht: Build mit DB-Tunnel, tar-over-ssh nach `/var/www/litbuyxyz.staging`, serverseitig `rsync -a --delete` ins Live-Verzeichnis, `pm2 restart litbuyxyz`. Live verifiziert: Kategorieseiten 200, Produktseite `noindex, follow`, GA im HTML, Sitemap 48 URLs (davon 23 Produkte mit echter Beschreibung).
+
+**Nicht gemacht:** Lighthouse, GSC-Check der .xyz.
