@@ -2,6 +2,7 @@ import type { PipelineStage } from "mongoose";
 import dbConnect from "@/lib/mongodb";
 import FindsProduct from "@/models/FindsProduct";
 import { buildLitBuyLink } from "@/lib/litbuy";
+import { canonicalizeCategory, expandCategory } from "@/lib/categoryGroups";
 
 /**
  * Normalized product shape emitted to the UI layer.
@@ -15,7 +16,8 @@ export interface ProductLite {
   name: string;
   description: string;
   price: number;
-  category: string;
+  category: string; // canonical group name ("Shoes", "T-Shirts", … or "Other")
+  rawCategory: string; // original DB value, kept for debugging / admin
   images: string[]; // normalized — always strings, never objects
   mainImage: string; // first image or fallback
   creatorName: string;
@@ -170,7 +172,9 @@ export function serializeProduct(doc: unknown): ProductLite {
     name: cleanName,
     description: stripCJK(p.description ?? ""),
     price: priceUSD,
-    category: p.category ?? "",
+    // Nie rohe DB-Werte wie "Not Assigned" in die UI durchreichen.
+    category: canonicalizeCategory(p.category),
+    rawCategory: p.category ?? "",
     images,
     mainImage,
     creatorName: p.creatorName ?? "",
@@ -236,6 +240,166 @@ export async function getFeaturedProducts(limit = 30): Promise<ProductLite[]> {
     return (docs as unknown[]).map(serializeProduct);
   } catch (err) {
     console.error("[productFetcher] getFeaturedProducts failed:", err);
+    return [];
+  }
+}
+
+/**
+ * Boost-aware sort stage shared by every listing query. Products with an
+ * active boost for the homepage page-id float to the top, then newest first.
+ */
+function boostSortStages(now: Date): PipelineStage[] {
+  return [
+    {
+      $addFields: {
+        totalBoostForPage: {
+          $sum: {
+            $map: {
+              input: {
+                $filter: {
+                  input: { $ifNull: ["$boosts", []] },
+                  as: "b",
+                  cond: {
+                    $and: [
+                      { $eq: ["$$b.boostPage", HOMEPAGE_BOOST_PAGE_ID] },
+                      { $gt: ["$$b.validUntil", now] },
+                    ],
+                  },
+                },
+              },
+              as: "validBoost",
+              in: "$$validBoost.amount",
+            },
+          },
+        },
+      },
+    },
+    { $sort: { totalBoostForPage: -1, _id: -1 } },
+  ];
+}
+
+export interface CategoryPage {
+  products: ProductLite[];
+  total: number;
+  page: number;
+  pages: number;
+}
+
+/**
+ * Serverseitig gerenderte Produktliste für /categories/[slug].
+ * `canonical` ist der Gruppenname aus CATEGORY_GROUPS; alle DB-Aliase werden
+ * automatisch expandiert. Gibt bei DB-Fehlern eine leere Seite zurück, damit
+ * die Kategorieseite mit ihrem redaktionellen Teil trotzdem ausgeliefert wird.
+ */
+export async function getProductsByCategory(
+  canonical: string,
+  opts: { page?: number; limit?: number } = {}
+): Promise<CategoryPage> {
+  const limit = Math.min(Math.max(1, opts.limit ?? 24), 60);
+  const page = Math.max(1, opts.page ?? 1);
+  try {
+    await dbConnect();
+    const aliases = expandCategory(canonical);
+    const match = { hidden: { $ne: true }, category: { $in: aliases } };
+    const total = await FindsProduct.countDocuments(match);
+    const docs = await FindsProduct.aggregate([
+      { $match: match },
+      ...boostSortStages(new Date()),
+      { $skip: (page - 1) * limit },
+      { $limit: limit },
+    ]);
+    return {
+      products: (docs as unknown[]).map(serializeProduct),
+      total,
+      page,
+      pages: Math.max(1, Math.ceil(total / limit)),
+    };
+  } catch (err) {
+    console.error("[productFetcher] getProductsByCategory failed:", err);
+    return { products: [], total: 0, page, pages: 1 };
+  }
+}
+
+/**
+ * Verwandte Produkte für die Produktseite — gleiche Kanon-Kategorie, ohne
+ * das aktuelle Produkt. Serverseitig, damit die Links im HTML stehen.
+ */
+export async function getRelatedProducts(
+  canonicalCategory: string,
+  excludeId: string,
+  limit = 8
+): Promise<ProductLite[]> {
+  try {
+    await dbConnect();
+    const aliases = expandCategory(canonicalCategory);
+    const docs = await FindsProduct.aggregate([
+      { $match: { hidden: { $ne: true }, category: { $in: aliases } } },
+      ...boostSortStages(new Date()),
+      { $limit: limit + 1 },
+    ]);
+    return (docs as unknown[])
+      .map(serializeProduct)
+      .filter((p) => p._id !== excludeId)
+      .slice(0, limit);
+  } catch (err) {
+    console.error("[productFetcher] getRelatedProducts failed:", err);
+    return [];
+  }
+}
+
+/**
+ * Anzahl Produkte pro Kanon-Kategorie (für Hub-Seite und Tabs).
+ */
+export async function getCategoryCounts(
+  canonicals: string[]
+): Promise<Record<string, number>> {
+  const counts: Record<string, number> = {};
+  try {
+    await dbConnect();
+    await Promise.all(
+      canonicals.map(async (c) => {
+        counts[c] = await FindsProduct.countDocuments({
+          hidden: { $ne: true },
+          category: { $in: expandCategory(c) },
+        });
+      })
+    );
+  } catch (err) {
+    console.error("[productFetcher] getCategoryCounts failed:", err);
+  }
+  return counts;
+}
+
+/**
+ * Kandidaten für die Sitemap: nur Produkte, die überhaupt eine Beschreibung
+ * der Mindestlänge haben. Die endgültige Entscheidung trifft
+ * isIndexableProduct(); hier wird nur vorgefiltert, damit nicht alle ~8.600
+ * Dokumente geladen werden.
+ */
+export async function getDescribedProducts(
+  minDescriptionChars: number
+): Promise<{ product: ProductLite; updatedAt: Date }[]> {
+  try {
+    await dbConnect();
+    const docs = await FindsProduct.find({
+      hidden: { $ne: true },
+      $expr: {
+        $gte: [
+          { $strLenCP: { $ifNull: ["$description", ""] } },
+          minDescriptionChars,
+        ],
+      },
+    })
+      .select("_id name description price category images creatorName store id updatedAt createdAt")
+      .lean();
+    return (docs as unknown as { updatedAt?: Date; createdAt?: Date }[]).map(
+      (doc) => ({
+        product: serializeProduct(doc),
+        updatedAt: doc.updatedAt ?? doc.createdAt ?? new Date("2026-04-28"),
+      })
+    );
+  } catch (err) {
+    console.error("[productFetcher] getDescribedProducts failed:", err);
     return [];
   }
 }

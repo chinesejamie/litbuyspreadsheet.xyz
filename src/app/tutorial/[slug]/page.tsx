@@ -8,6 +8,8 @@ import { breadcrumbListSchema, faqPageSchema, techArticleSchema } from "@/lib/sc
 import { absoluteUrl } from "@/lib/seo";
 import { TUTORIAL_PAGES, getTutorialPage } from "@/content/tutorials";
 import { LITBUY_AUTHOR, LITBUY_LAST_UPDATED } from "@/content/litbuy";
+import { getCategoriesForTutorial } from "@/content/categories";
+import RelatedCategories from "@/components/RelatedCategories";
 
 export async function generateStaticParams() {
   return TUTORIAL_PAGES.map((p) => ({ slug: p.slug }));
@@ -60,6 +62,7 @@ export default async function TutorialSubPage({
   ];
 
   const otherPages = TUTORIAL_PAGES.filter((p) => p.slug !== page.slug);
+  const relatedCategories = getCategoriesForTutorial(page.slug);
 
   return (
     <>
@@ -130,21 +133,25 @@ export default async function TutorialSubPage({
             </div>
           </section>
 
+          <RelatedCategories
+            guides={relatedCategories}
+            heading="Category guides that use this"
+          />
+
           <section className="mb-12 p-6 border border-border rounded-xl bg-bg-secondary/30">
             <h2 className="text-xl font-bold uppercase tracking-tight mb-3">
               Ready to order?
             </h2>
             <p className="text-text-secondary text-sm leading-relaxed mb-3">
-              Browse 10,000+ verified listings in the{" "}
-              <a
-                href="https://lit-buy-spreadsheet.com/litbuy-spreadsheet"
-                target="_blank"
-                rel="noopener"
-                className="text-accent hover:underline"
-              >
+              Browse the listings in the{" "}
+              <Link href="/litbuy-spreadsheet" className="text-accent hover:underline">
                 LitBuy Spreadsheet
-              </a>
-              . Or pick an{" "}
+              </Link>
+              , start from a{" "}
+              <Link href="/categories" className="text-accent hover:underline">
+                category guide
+              </Link>
+              , or pick an{" "}
               <Link href="/outfits" className="text-accent hover:underline">
                 outfit guide
               </Link>{" "}

@@ -4,6 +4,14 @@ import Link from "next/link";
 import { useAutoScroll } from "@/hooks/useAutoScroll";
 import { LITBUY_CATEGORIES_COPY } from "@/content/litbuy";
 import { CATEGORY_IMAGES } from "@/lib/categoryImages";
+import { categorySlug, LANDING_CATEGORIES } from "@/lib/categoryGroups";
+
+// "Other" hat keine eigene Landingpage — dort geht es in die interaktive Liste.
+function categoryHref(name: string): string {
+  return LANDING_CATEGORIES.includes(name)
+    ? `/categories/${categorySlug(name)}`
+    : `/litbuy-spreadsheet?category=${encodeURIComponent(name)}`;
+}
 
 export default function LitBuyCategoriesGrid() {
   const scrollRef = useAutoScroll(0.35);
@@ -40,7 +48,7 @@ export default function LitBuyCategoriesGrid() {
             return (
               <Link
                 key={cat.name}
-                href={`/litbuy-spreadsheet?category=${encodeURIComponent(cat.name)}`}
+                href={categoryHref(cat.name)}
                 className="flex-shrink-0 w-[160px] bg-bg-card border border-border rounded-xl overflow-hidden text-center hover:border-accent/30 transition-colors group relative"
               >
                 <div className="absolute inset-0 bg-gradient-to-b from-accent/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity z-10 pointer-events-none" />
@@ -85,7 +93,9 @@ export default function LitBuyCategoriesGrid() {
               className="bg-bg-card border border-border rounded-xl p-5"
             >
               <h3 className="font-mono text-sm font-bold uppercase mb-2 text-accent">
-                {cat.name}
+                <Link href={categoryHref(cat.name)} className="hover:underline">
+                  {cat.name}
+                </Link>
               </h3>
               <p className="text-text-secondary text-sm leading-relaxed">
                 {cat.copy}

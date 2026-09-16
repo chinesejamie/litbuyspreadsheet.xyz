@@ -1,112 +1,147 @@
-"use client";
-
-import { useState, useEffect, useCallback } from "react";
-import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
-import { CATEGORIES } from "@/lib/data";
+import type { Metadata } from "next";
+import Link from "next/link";
 import Footer from "@/components/Footer";
-import FadeIn from "@/components/motion/FadeIn";
+import { SchemaScript } from "@/components/seo/SchemaScript";
+import { generatePageMetadata } from "@/lib/metadata";
+import { breadcrumbListSchema, itemListSchema, webPageSchema } from "@/lib/schema";
+import { absoluteUrl } from "@/lib/seo";
+import { getCategoryCounts } from "@/lib/productFetcher";
+import { CATEGORY_GUIDES } from "@/content/categories";
 
-const CATEGORY_IMAGES: Record<string, string> = {
-  Shoes: "/categories/shoes.png",
-  Tshirts: "/categories/tshirts.png",
-  Hoodies: "/categories/hoodies.png",
-  Jackets: "/categories/jackets.png",
-  Pants: "/categories/pants.png",
-  Tracksuits: "/categories/tracksuits.png",
-  Accessories: "/categories/accessories.png",
-  Electronics: "/categories/electronics.png",
-  Sports: "/categories/sports.png",
-  Others: "/categories/others.png",
-};
+// Counts refresh hourly; the editorial part is static.
+export const revalidate = 3600;
 
-interface CategoryWithCount {
-  name: string;
-  count: number | null;
-}
+const PAGE_DATE = "2026-09-16";
 
-export default function CategoriesPage() {
-  const router = useRouter();
-  const [categories, setCategories] = useState<CategoryWithCount[]>(
-    CATEGORIES.filter((c) => c.name !== "All").map((c) => ({ name: c.name, count: null }))
-  );
+export const metadata: Metadata = generatePageMetadata({
+  title: "LitBuy Spreadsheet Categories — Buying Guides for Every Item",
+  description:
+    "Ten category buying guides for the LitBuy Spreadsheet: shoes, tees, hoodies, jackets, pants, tracksuits, jerseys, accessories and more. Sizing, QC checks and live listings.",
+  path: "/categories",
+  canonicalPath: "/categories",
+  keywords: [
+    "litbuy categories",
+    "litbuy spreadsheet categories",
+    "rep categories litbuy",
+    "litbuy buying guide",
+  ],
+});
 
-  const fetchCounts = useCallback(async () => {
-    const nonAll = CATEGORIES.filter((c) => c.name !== "All");
-    const results = await Promise.all(
-      nonAll.map(async (cat) => {
-        try {
-          const res = await fetch(`/api/products?category=${encodeURIComponent(cat.name)}&limit=1`);
-          const data = await res.json();
-          return { name: cat.name, count: data.total ?? 0 };
-        } catch {
-          return { name: cat.name, count: 0 };
-        }
-      })
-    );
-    setCategories(results);
-  }, []);
+export default async function CategoriesHubPage() {
+  const counts = await getCategoryCounts(CATEGORY_GUIDES.map((g) => g.canonical));
 
-  useEffect(() => {
-    fetchCounts();
-  }, [fetchCounts]);
-
-  const handleCategoryClick = (categoryName: string) => {
-    router.push(`/products?category=${encodeURIComponent(categoryName)}`);
-  };
+  const schemas = [
+    webPageSchema({
+      url: absoluteUrl("/categories"),
+      name: "LitBuy Spreadsheet Categories",
+      description:
+        "Category buying guides for the LitBuy Spreadsheet with sizing, QC and budget notes plus live listings.",
+      dateModified: PAGE_DATE,
+    }),
+    breadcrumbListSchema([
+      { name: "Home", url: absoluteUrl("/") },
+      { name: "Categories", url: absoluteUrl("/categories") },
+    ]),
+    itemListSchema(
+      CATEGORY_GUIDES.map((g) => ({
+        name: g.canonical,
+        url: absoluteUrl(`/categories/${g.slug}`),
+      }))
+    ),
+  ];
 
   return (
     <>
-      <div className="max-w-4xl mx-auto px-5 pb-20">
-        <FadeIn>
-          <div className="text-center py-12">
-            <h2 className="text-[clamp(28px,6vw,42px)] font-black uppercase">
-              All <span className="text-accent">Categories</span>
-            </h2>
-          </div>
-        </FadeIn>
+      <SchemaScript schema={schemas} id="categories-hub-schema" />
+      <div className="px-6 py-14 max-w-6xl mx-auto">
+        <nav aria-label="Breadcrumb" className="mb-6">
+          <ol className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-text-secondary">
+            <li>
+              <Link href="/" className="hover:text-accent">
+                Home
+              </Link>
+            </li>
+            <li aria-hidden="true">/</li>
+            <li className="text-white" aria-current="page">
+              Categories
+            </li>
+          </ol>
+        </nav>
 
-        <div className="grid grid-cols-2 gap-4">
-          {categories.map((cat, i) => (
-            <motion.button
-              key={cat.name}
-              onClick={() => handleCategoryClick(cat.name)}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.05, duration: 0.4 }}
-              whileHover={{ y: -4 }}
-              whileTap={{ scale: 0.98 }}
-              className="bg-bg-card border border-border rounded-xl p-6 text-left hover:border-accent/40 transition-colors group relative overflow-hidden"
-            >
-              <div className="absolute inset-0 bg-gradient-to-br from-accent/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-              <div className="w-full h-[140px] bg-bg-elevated rounded-xl overflow-hidden mb-4 flex items-center justify-center">
-                {CATEGORY_IMAGES[cat.name] ? (
-                  <img
-                    src={CATEGORY_IMAGES[cat.name]}
-                    alt={cat.name}
-                    className="w-full h-full object-contain"
-                    
-                  />
-                ) : (
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-8 h-8 text-text-muted">
-                    <rect x="3" y="3" width="7" height="7" rx="1" /><rect x="14" y="3" width="7" height="7" rx="1" />
-                    <rect x="3" y="14" width="7" height="7" rx="1" /><rect x="14" y="14" width="7" height="7" rx="1" />
-                  </svg>
-                )}
-              </div>
-              <div className="relative z-10">
-                <h3 className="font-mono text-base font-black uppercase mb-1">{cat.name}</h3>
-                <p className="font-mono text-xs text-text-muted">
-                  {cat.count === null ? (
-                    <span className="inline-block w-8 h-3 shimmer rounded" />
-                  ) : (
-                    `${cat.count} product${cat.count !== 1 ? "s" : ""}`
-                  )}
-                </p>
-              </div>
-            </motion.button>
-          ))}
-        </div>
+        <header className="mb-12 max-w-3xl">
+          <div className="font-mono text-xs uppercase tracking-[0.3em] text-accent mb-4">
+            /categories
+          </div>
+          <h1 className="text-[clamp(34px,7vw,60px)] font-black uppercase leading-none tracking-tight mb-5">
+            LitBuy Spreadsheet <span className="text-accent">Categories</span>
+          </h1>
+          <p className="text-text-secondary text-base sm:text-lg leading-relaxed">
+            Every category on the LitBuy Spreadsheet has its own buying guide:
+            how sizing runs for that item type, what to check in QC photos,
+            what a fair price looks like after conversion from CNY, and which
+            marketplace the best sellers live on. Each guide ends with live
+            listings from the spreadsheet database.
+          </p>
+        </header>
+
+        <section aria-label="Category guides">
+          <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 list-none p-0 m-0">
+            {CATEGORY_GUIDES.map((g) => {
+              const count = counts[g.canonical];
+              return (
+                <li key={g.slug}>
+                  <Link
+                    href={`/categories/${g.slug}`}
+                    className="group flex flex-col h-full bg-bg-card border border-border rounded-xl overflow-hidden hover:border-accent/40 transition-colors"
+                  >
+                    <div className="h-[150px] bg-bg-elevated flex items-center justify-center overflow-hidden">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={g.image}
+                        alt={`${g.canonical} on the LitBuy Spreadsheet`}
+                        loading="lazy"
+                        width={300}
+                        height={150}
+                        className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
+                      />
+                    </div>
+                    <div className="p-5 flex flex-col gap-2 flex-1">
+                      <h2 className="font-mono text-base font-black uppercase group-hover:text-accent transition-colors">
+                        {g.canonical}
+                      </h2>
+                      <p className="text-text-secondary text-sm leading-relaxed flex-1">
+                        {g.tagline}
+                      </p>
+                      <p className="font-mono text-[11px] uppercase text-text-muted">
+                        {typeof count === "number" && count > 0
+                          ? `${count.toLocaleString("en-US")} listings`
+                          : "Live listings"}
+                      </p>
+                    </div>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+
+        <section className="mt-16 p-6 border border-border rounded-xl bg-bg-secondary/30 max-w-3xl">
+          <h2 className="text-xl font-bold uppercase tracking-tight mb-3">
+            Not sure where to start?
+          </h2>
+          <p className="text-text-secondary text-sm leading-relaxed">
+            First-time buyers usually do best with a hoodie or a pair of shoes
+            plus a tee or two as filler. Read the{" "}
+            <Link href="/tutorial/first-haul-checklist" className="text-accent hover:underline">
+              first haul checklist
+            </Link>{" "}
+            before ordering, or pick a complete look from the{" "}
+            <Link href="/outfits" className="text-accent hover:underline">
+              outfit guides
+            </Link>
+            .
+          </p>
+        </section>
       </div>
       <Footer />
     </>

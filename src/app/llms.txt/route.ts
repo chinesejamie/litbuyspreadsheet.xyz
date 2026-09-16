@@ -1,61 +1,75 @@
 import { NextResponse } from "next/server";
+import { CATEGORY_GUIDES } from "@/content/categories";
+import { OUTFIT_GUIDES } from "@/content/outfits";
+import { TUTORIAL_PAGES } from "@/content/tutorials";
 
-const LLMS_TXT = `# LitBuy Spreadsheet
+const BASE = "https://litbuyspreadsheet.xyz";
 
-> LitBuy Spreadsheet is a free, community-curated database of 10,000+ verified direct product links for rep fashion finds from Chinese marketplaces (Taobao, Weidian, 1688), accessible via shopping agents such as LitBuy.
+function buildLlmsTxt(): string {
+  const categoryLines = CATEGORY_GUIDES.map(
+    (g) => `- [${g.canonical}](${BASE}/categories/${g.slug}): ${g.tagline}`
+  ).join("\n");
+  const outfitLines = OUTFIT_GUIDES.map(
+    (g) => `- [${g.h1}](${BASE}/outfits/${g.slug}): ${g.tagline}`
+  ).join("\n");
+  const tutorialLines = TUTORIAL_PAGES.map(
+    (p) => `- [${p.h1}](${BASE}/tutorial/${p.slug}): ${p.tagline}`
+  ).join("\n");
 
-## What is LitBuy Spreadsheet?
+  return `# LitBuy Reps Guide
 
-LitBuy Spreadsheet is a free community resource that aggregates verified product links for fashion finds — shoes, hoodies, tracksuits, accessories, and more — from Chinese online marketplaces. Users browse the database, copy product links, and purchase via a shopping agent (like LitBuy) that handles payments, quality control photos, and international shipping.
+> The editorial companion to the LitBuy Spreadsheet: category buying guides, outfit blueprints and step-by-step tutorials for ordering rep fashion from Taobao, Weidian and 1688 through the LitBuy shopping agent.
 
-## Key Pages
+## What this site is
 
-- [Homepage & Full Guide](https://litbuyspreadsheet.xyz/): Complete guide to finding, buying, and using the spreadsheet
-- [Product Database](https://litbuyspreadsheet.xyz/litbuy-spreadsheet): Browse 10,000+ verified product links by category
-- [Step-by-Step Tutorial](https://litbuyspreadsheet.xyz/tutorial): How to place your first order via a shopping agent
+litbuyspreadsheet.xyz is a guide site. It explains how to size, QC and budget each product category, shows complete outfit builds, and walks first-time buyers through a LitBuy order. Product listings are pulled live from the community spreadsheet database and link out to LitBuy.
 
-## How It Works
+## Category guides
 
-1. Browse the product database at /litbuy-spreadsheet
-2. Find a product you want (shoes, hoodies, tracksuits, bags, etc.)
-3. Copy the product link
-4. Sign up on LitBuy (a shopping agent platform)
-5. Paste the link into LitBuy and add to your haul
-6. Pay, request QC photos, then ship to your address
+${categoryLines}
 
-## Frequently Asked Questions
+## Outfit guides
+
+${outfitLines}
+
+## Tutorials
+
+- [How to Order from LitBuy](${BASE}/tutorial): Four-step overview for a first order
+${tutorialLines}
+
+## Other pages
+
+- [Homepage](${BASE}/): Overview, FAQ and comparison of shopping agents
+- [Category hub](${BASE}/categories): All ten category guides
+- [Browse the spreadsheet](${BASE}/litbuy-spreadsheet): Searchable product grid
+
+## Frequently asked questions
 
 **What is the LitBuy Spreadsheet?**
-A free community database of 10,000+ verified product links for rep fashion finds from Chinese marketplaces, curated and maintained to remove dead links.
+A community-maintained database of verified product links for rep fashion from Chinese marketplaces, curated to remove dead links. This site is its guide companion.
 
-**Is the LitBuy Spreadsheet safe?**
-The site links to verified marketplace listings via trusted shopping agents. It holds a 4.4/5 Trustpilot rating and a high ScamAdviser trust score.
-
-**Which shopping agents work with the LitBuy Spreadsheet?**
-LitBuy is the primary recommended agent. Other compatible agents include Pandabuy, Sugargoo, Kakobuy, and Wegobuy.
-
-**How much do items cost?**
-Products range from approximately $5–$150 USD depending on category. Shoes average $20–$50, jackets $30–$80, accessories $5–$30.
+**How do I buy something?**
+Open a listing, click "Buy on LitBuy", add the item to your LitBuy cart, pay, wait for QC photos at the warehouse, then choose a shipping line. The tutorial covers each step.
 
 **How long does shipping take?**
-Standard shipping via DHL, FedEx, or EMS takes 7–21 days depending on destination country and shipping line selected.
+Typically 7–21 days depending on the shipping line and destination country.
 
-**What product categories are available?**
-Shoes, T-Shirts, Hoodies, Jackets, Pants, Tracksuits, Accessories, Watches, Bags, Electronics, Sportswear, and more.
+**Which categories are covered?**
+Shoes, T-Shirts, Hoodies, Jackets, Pants, Shorts, Tracksuits, Jerseys, Accessories and Electronics.
 
 ## About
 
-- Founded by Miki
-- Community-maintained, updated weekly
+- Written and maintained by Miki
 - Social: TikTok @timseydiii, Instagram @timseydii, YouTube @timseydi, Discord
 
 ## Licensing
 
-Content may be indexed for search purposes. Commercial training use is not permitted.
+Content may be indexed and cited for search and answer purposes with attribution. Commercial training use is not permitted.
 `;
+}
 
 export function GET() {
-  return new NextResponse(LLMS_TXT, {
+  return new NextResponse(buildLlmsTxt(), {
     headers: {
       "Content-Type": "text/plain; charset=utf-8",
       "Cache-Control": "public, max-age=86400, s-maxage=86400",

@@ -3,6 +3,7 @@ import "./globals.css";
 import Header from "@/components/Header";
 import FloatingButtons from "@/components/FloatingButtons";
 import ScrollToTop from "@/components/ScrollToTop";
+import GoogleAnalytics from "@/components/GoogleAnalytics";
 import { SchemaScript } from "@/components/seo/SchemaScript";
 import { organizationSchema, webSiteSchema } from "@/lib/schema";
 import { SITE_URL } from "@/lib/seo";
@@ -35,6 +36,7 @@ export default function RootLayout({
         <Header />
         <main className="pt-[60px]">{children}</main>
         <FloatingButtons />
+        <GoogleAnalytics />
       </body>
     </html>
   );

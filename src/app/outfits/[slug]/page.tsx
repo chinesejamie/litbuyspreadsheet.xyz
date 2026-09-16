@@ -8,6 +8,8 @@ import { breadcrumbListSchema, faqPageSchema, techArticleSchema } from "@/lib/sc
 import { absoluteUrl } from "@/lib/seo";
 import { OUTFIT_GUIDES, getOutfitGuide } from "@/content/outfits";
 import { LITBUY_AUTHOR, LITBUY_LAST_UPDATED } from "@/content/litbuy";
+import { getCategoriesForOutfit } from "@/content/categories";
+import RelatedCategories from "@/components/RelatedCategories";
 
 export async function generateStaticParams() {
   return OUTFIT_GUIDES.map((g) => ({ slug: g.slug }));
@@ -60,6 +62,7 @@ export default async function OutfitGuidePage({
   ];
 
   const otherGuides = OUTFIT_GUIDES.filter((g) => g.slug !== guide.slug);
+  const shopCategories = getCategoriesForOutfit(guide.slug);
 
   return (
     <>
@@ -139,7 +142,7 @@ export default async function OutfitGuidePage({
               <a
                 href="https://lit-buy-spreadsheet.com/litbuy-spreadsheet"
                 target="_blank"
-                rel="noopener"
+                rel="nofollow noopener"
                 className="text-accent hover:underline"
               >
                 LitBuy Spreadsheet
@@ -147,6 +150,11 @@ export default async function OutfitGuidePage({
               — filter by category and platform to match this guide.
             </p>
           </section>
+
+          <RelatedCategories
+            guides={shopCategories}
+            heading="Shop the pieces by category"
+          />
 
           <section className="mb-12">
             <h2 className="text-2xl font-bold uppercase tracking-tight mb-5">FAQ</h2>
@@ -180,7 +188,7 @@ export default async function OutfitGuidePage({
               <a
                 href="https://lit-buy-spreadsheet.com/sizing-guide"
                 target="_blank"
-                rel="noopener"
+                rel="nofollow noopener"
                 className="text-accent hover:underline"
               >
                 see the sizing guide on LitBuy Spreadsheet

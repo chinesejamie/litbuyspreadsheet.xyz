@@ -9,6 +9,7 @@ import {
 } from "@/lib/categoryGroups";
 import dbConnect from "@/lib/mongodb";
 import FindsProduct from "@/models/FindsProduct";
+import { CATEGORY_GUIDES } from "@/content/categories";
 
 // ISR: refresh tab counts hourly so they stay close to reality without
 // hitting the DB on every request.
@@ -158,6 +159,34 @@ export default async function ProductsPage({
       </div>
 
       <ProductsClient counts={counts} />
+
+      {/* Serverseitig gerenderte Links auf die Kategorie-Guides — die
+          indexierbaren Seiten der Domain brauchen interne Links aus dem
+          meistbesuchten Browse-Screen. */}
+      <section className="max-w-6xl mx-auto px-5 pb-16" aria-labelledby="guides-heading">
+        <h2 id="guides-heading" className="font-mono text-xl font-bold uppercase mb-3">
+          Category <span className="text-accent">buying guides</span>
+        </h2>
+        <p className="text-text-secondary text-sm leading-relaxed mb-6 max-w-2xl">
+          Sizing, QC photo checks and realistic budgets for each item type, with
+          live listings from the spreadsheet.
+        </p>
+        <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {CATEGORY_GUIDES.map((g) => (
+            <li key={g.slug}>
+              <Link
+                href={`/categories/${g.slug}`}
+                className="group block p-4 border border-border rounded-xl hover:border-accent transition-colors"
+              >
+                <span className="block font-mono text-sm font-bold uppercase group-hover:text-accent transition-colors">
+                  {g.canonical}
+                </span>
+                <span className="block text-xs text-text-secondary mt-1">{g.tagline}</span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </section>
 
       <Footer />
     </>

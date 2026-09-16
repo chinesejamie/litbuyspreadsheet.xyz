@@ -11,6 +11,7 @@ import Logo from "./Logo";
 const NAV_ITEMS = [
   { href: "/", label: "Home" },
   { href: "/litbuy-spreadsheet", label: "Spreadsheet" },
+  { href: "/categories", label: "Categories" },
   { href: "/outfits", label: "Outfits" },
   { href: "/tutorial", label: "Tutorial" },
 ];

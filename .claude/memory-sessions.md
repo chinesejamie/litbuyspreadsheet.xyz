@@ -93,3 +93,21 @@ agent", "litbuy vs X" etc. — nicht "litbuy spreadsheet". Neue Strategie:
 - Slug-Konvention: `/brands/[slug]` bestätigt (existing route)
 - DataForSEO Credentials: empfohlen vor Sprint P1
 - Content-Review: Miki-Approval pro Article oder Spot-Check?
+
+---
+
+## 2026-09-16 — Komplett-Überarbeitung (Spam-Update-Härtung + Analytics)
+
+**Trigger:** Analyse der .xyz nach dem GSC-Anstieg der .com: kein Tracking, 7.211 Dünnseiten indexiert, Linknetz, "Not Assigned" in UI.
+
+**Umgesetzt:**
+- GA4 + `buy_now_click`-Tracking (`GoogleAnalytics.tsx`, `lib/analytics.ts`, `BuyLink.tsx`)
+- Qualitätsregel für Produktindexierung (`lib/productQuality.ts`), Sitemap neu (statisch + 10 Kategorien + 5 Outfits + 5 Tutorials + indexierbare Produkte)
+- 10 Kategorie-Guides (`content/categories.ts`), `/categories` Hub + `/categories/[slug]` mit SSR-Grid (`ProductGrid.tsx`) und Pagination
+- Produktseite neu (serverseitig: Related, How-to-order, Guide-Teaser; Client nur Galerie + Recently Viewed)
+- Footer/Header neu, `not-found.tsx`, `llms.txt` neu, `RelatedCategories` auf Outfit-/Tutorial-Seiten, nofollow auf Schwesterseiten-Links, Fake-Social-Proof entfernt
+- `CATEGORY_GROUPS` um Lowercase-Aliase ergänzt; `productFetcher`: `getProductsByCategory`, `getRelatedProducts`, `getCategoryCounts`, `getDescribedProducts`
+
+**Verifikation:** `tsc` sauber; `next build --webpack` ok; lokaler `next start` gegen echte DB per SSH-Tunnel (Port 27117): alle Routen 200/404 korrekt, Produktseite `noindex, follow`, Kategorieseite ~976 Wörter + 24 Produktlinks, GA-Tag im HTML, Footer nur ein nofollow-Extern-Link.
+
+**Nicht gemacht:** Deploy (wartet auf Freigabe), Lighthouse, GSC-Check der .xyz.

@@ -108,7 +108,7 @@ export default function OutfitsPage() {
             <a
               href="https://lit-buy-spreadsheet.com/litbuy-spreadsheet"
               target="_blank"
-              rel="noopener"
+              rel="nofollow noopener"
               className="text-accent hover:underline"
             >
               LitBuy Spreadsheet

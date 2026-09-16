@@ -57,3 +57,14 @@
 - Current SERP top-5: litbuy.net, litbuyspreadsheet.gg, litbuy.com, litbuysheets.net (2-month-old, ~1,300 words), Instagram/TikTok.
 - No long-form authoritative guide exists — blue ocean opportunity.
 - Winning recipe: 5,500+ words, H1/H2/H3 hierarchy, FAQPage + HowTo schema, E-E-A-T signals, 2026 freshness marker.
+
+---
+
+## Update 2026-09-16 — Neue Index-Strategie (ersetzt Teile oben)
+
+- **Positionierung**: .xyz = redaktioneller Guide-Companion; "litbuy spreadsheet" (Head-Term) gehört der .com. Die .xyz zielt auf Kategorie-Kaufberatung + informational.
+- **Canonical-Strategie geändert**: `/litbuy-spreadsheet` hat heute Self-Canonical (nicht mehr → `/`); `?category=`/`?q=` canonicalisieren auf die Basis-URL. `/products*` → 301 auf `/litbuy-spreadsheet*`.
+- **Produktseiten**: `noindex, follow` bis `isIndexableProduct()` erfüllt (siehe memory-decisions).
+- **Neue Ziel-Keywords** (commercial): `/categories/shoes` litbuy shoes · `/categories/t-shirts` litbuy t-shirts · `/categories/hoodies` litbuy hoodies / essentials hoodie litbuy · `/categories/jackets` litbuy jackets / moncler rep · `/categories/pants` litbuy pants / rep jeans · `/categories/shorts` litbuy shorts · `/categories/tracksuits` litbuy tracksuit / tech fleece rep · `/categories/jerseys` litbuy jerseys / rep football kits · `/categories/accessories` litbuy accessories / rep belt · `/categories/electronics` litbuy electronics / rep airpods.
+- **Tracking**: GA4 G-J8NYMZMMEV + G-M30J0GV7SD (geteilt → in GA4 nach Hostname filtern). GSC-Stand der .xyz nach dem August-Update noch nicht geprüft.
+- **Offen**: Produktbeschreibungen nachpflegen (macht Produktseiten automatisch indexierbar); `/socials` prüfen; verschachteltes `<main>` (Layout + Seiten) aufräumen; Lighthouse-Lauf nach Deploy.

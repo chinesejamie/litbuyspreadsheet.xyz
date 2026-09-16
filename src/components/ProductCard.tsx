@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { trackBuyNowClick } from "@/lib/analytics";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Product = any;
@@ -11,6 +12,10 @@ function nameToSlug(name: string): string {
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-|-$/g, "");
+}
+
+function productHref(product: Product): string {
+  return `/litbuy-spreadsheet/${product.slug || nameToSlug(product.name)}`;
 }
 
 interface ProductCardProps {
@@ -29,7 +34,7 @@ export default function ProductCard({ product }: ProductCardProps) {
       whileTap={{ scale: 0.98 }}
     >
       {/* Image - links to product page */}
-      <Link href={`/litbuy-spreadsheet/${nameToSlug(product.name)}`}>
+      <Link href={productHref(product)}>
         <div className="aspect-square bg-bg-elevated overflow-hidden cursor-pointer relative">
           {product.images?.[0] ? (
             <img
@@ -55,16 +60,19 @@ export default function ProductCard({ product }: ProductCardProps) {
 
       {/* Info */}
       <div className="p-4">
-        <Link href={`/litbuy-spreadsheet/${nameToSlug(product.name)}`}>
+        <Link href={productHref(product)}>
           <div className="font-mono text-[13px] font-bold uppercase leading-tight mb-3 hover:text-accent transition-colors">
             {product.name}
           </div>
         </Link>
         <motion.a
-          href={product.link || "#"}
+          href={product.link || product.litbuyLink || "#"}
           target="_blank"
-          rel="noopener noreferrer"
-          onClick={(e) => e.stopPropagation()}
+          rel="noopener noreferrer nofollow sponsored"
+          onClick={(e) => {
+            e.stopPropagation();
+            trackBuyNowClick(product, "card");
+          }}
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           className="block w-full py-2.5 px-4 bg-accent text-bg-primary font-mono text-sm font-bold uppercase tracking-wide text-center rounded-lg hover:bg-accent-hover transition-colors"

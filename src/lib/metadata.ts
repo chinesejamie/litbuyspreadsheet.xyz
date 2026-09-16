@@ -20,8 +20,10 @@ export function generatePageMetadata(opts: PageMetaOpts): Metadata {
   const image = opts.image ?? DEFAULT_OG_IMAGE;
   const ogType = opts.type ?? "website";
 
+  // noindex-Seiten (dünne Produktseiten, Pagination) bleiben "follow", damit
+  // interne Links weiterhin Linkkraft an Kategorie- und Guide-Seiten geben.
   const robots: Metadata["robots"] = opts.noindex
-    ? { index: false, follow: false }
+    ? { index: false, follow: true, googleBot: { index: false, follow: true } }
     : {
         index: true,
         follow: true,

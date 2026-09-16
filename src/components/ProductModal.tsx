@@ -1,8 +1,9 @@
 "use client";
 
 import { X } from "lucide-react";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { trackBuyNowClick } from "@/lib/analytics";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Product = any;
@@ -23,9 +24,6 @@ export default function ProductModal({
   const [currentImage, setCurrentImage] = useState(0);
   const [related, setRelated] = useState<Product[]>([]);
   const [recentProducts, setRecentProducts] = useState<Product[]>([]);
-
-  const soldCount = useMemo(() => Math.floor(Math.random() * 171) + 30, [product]);
-  const hoursAgo = useMemo(() => Math.floor(Math.random() * 12) + 1, [product]);
 
   useEffect(() => {
     setCurrentImage(0);
@@ -145,9 +143,6 @@ export default function ProductModal({
                 <div className="text-[22px] font-bold uppercase tracking-tight">
                   {product.name}
                 </div>
-                <div className="text-[12px] text-orange-400 font-semibold">
-                  🔥 {soldCount} sold in last {hoursAgo} {hoursAgo === 1 ? "hour" : "hours"}
-                </div>
                 <div className="font-mono text-[22px] font-bold">
                   ${product.price?.toFixed(2)}
                 </div>
@@ -163,9 +158,10 @@ export default function ProductModal({
                 </div>
                 <div className="flex flex-col gap-2.5 mt-3">
                   <motion.a
-                    href={product.link || "#"}
+                    href={product.link || product.litbuyLink || "#"}
                     target="_blank"
-                    rel="noopener noreferrer"
+                    rel="noopener noreferrer nofollow sponsored"
+                    onClick={() => trackBuyNowClick(product, "modal")}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     className="block py-3.5 px-8 bg-accent text-bg-primary font-mono text-sm font-bold uppercase tracking-wider text-center rounded-lg hover:bg-accent-hover transition-colors"

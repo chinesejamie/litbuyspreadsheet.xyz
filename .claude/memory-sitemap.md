@@ -36,3 +36,19 @@
 - Add `generateMetadata()` to `/products/[slug]`, `/brands/[id]`, and other sub-pages for proper per-page SEO
 - Add BreadcrumbList schema to sub-pages
 - Consider Product schema on `/products/[slug]` with offers, brand, image
+
+---
+
+## Update 2026-09-16
+
+| Route | Status | Index | Schema | Bemerkung |
+|---|---|---|---|---|
+| `/litbuy-spreadsheet` | live | ja (Self-Canonical) | WebPage… | interaktive Liste + Kategorie-Guide-Links |
+| `/litbuy-spreadsheet/[slug]` | live | **nein** (Regel `isIndexableProduct`) | Breadcrumb (+Product nur wenn indexierbar) | ersetzt `/products/[slug]`, 301 vorhanden |
+| `/categories` | live | ja | WebPage, Breadcrumb, ItemList | serverseitig, ISR 1h |
+| `/categories/[slug]` | live | ja (`?page>1` nein) | WebPage, Breadcrumb, FAQPage, ItemList | shoes, t-shirts, hoodies, jackets, pants, shorts, tracksuits, jerseys, accessories, electronics |
+| `/outfits/[slug]`, `/tutorial/[slug]` | live | ja | TechArticle, Breadcrumb, FAQPage | jetzt mit Kategorie-Chips |
+| `/brands`, `/brands/[id]` | Platzhalter | nein | – | "Coming soon" |
+| `/_not-found` | live | nein | – | neu, mit Kategorie-Links |
+
+Sitemap enthält jetzt: `/`, `/categories`, `/litbuy-spreadsheet`, `/outfits`, `/tutorial`, 10 Kategorien, 5 Outfits, 5 Tutorials, indexierbare Produkte (aktuell 0). Keine `/products`-, `/brands`-, `/socials`-Einträge mehr.

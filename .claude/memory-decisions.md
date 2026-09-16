@@ -65,3 +65,25 @@ Created the SEO plumbing that was completely absent from the project:
 
 ### Begründung
 Every future page in this project can now use `generatePageMetadata()` and the schema builders. One-time investment, perpetual reuse.
+
+---
+
+## 2026-09-16 — Komplett-Überarbeitung nach August-2026-Spam-Update
+
+### Kontext
+GSC der Schwesterseite lit-buy-spreadsheet.com stieg mit dem June-Core-Update und dem August-Spam-Update stark. Die .xyz hatte dagegen 7.211 Produktseiten mit ~57 Wörtern sichtbarem Text in der Sitemap, kein Analytics, ein Schwesterseiten-Linknetz im Footer und rohe DB-Kategorien ("Not Assigned") in der UI — exakt das Muster, das das Spam-Update bestraft, mit Risiko für die .com (gleiche DB, gleicher Server).
+
+### Entscheidung
+1. **Produktseiten `noindex, follow` per Regel** (`src/lib/productQuality.ts`, `isIndexableProduct`): indexierbar nur mit ≥120 Zeichen Beschreibung, Bild und Kategorie ≠ Other. Stand heute erfüllt das kein Produkt (Stichprobe 0/100 mit Beschreibung) → 0 Produkt-URLs in der Sitemap. Seiten bleiben erreichbar; Product-Schema nur für indexierbare.
+2. **`/categories/[slug]` als indexierbare kommerzielle Seiten**: 10 Guides in `src/content/categories.ts` (Intro, Highlights, Sizing/QC/Budget, FAQ, Related Outfits/Tutorials) + SSR-Produkt-Grid (24/Seite, Pagination `?page=` ist noindex). "Other" bewusst ohne Landingpage. `/categories/layout.tsx` (noindex) gelöscht, Hub serverseitig neu.
+3. **Kein Linknetz**: Footer-Links auf kakobuy-spreadsheet.com und oopbuysheet.com entfernt; einziger .com-Link `rel="nofollow noopener"`; alle Kauf-Links `nofollow sponsored`.
+4. **GA4** (`GoogleAnalytics.tsx`, `lib/analytics.ts`): IDs wie Schwesterseiten (G-J8NYMZMMEV, G-M30J0GV7SD), Override `NEXT_PUBLIC_GA_IDS`; Event `buy_now_click` auf Card, Modal, Produktseite, Kategorie-Grid.
+5. **Kategorien kanonisiert** (`canonicalizeCategory` in `serializeProduct`; `ProductLite.category` ist jetzt der Gruppenname, `rawCategory` der DB-Wert). Lowercase-DB-Aliase (`tShirts`, `hoodies`, `accessories`, …) in `CATEGORY_GROUPS` ergänzt → T-Shirts 1.488→1.555 usw.
+6. **Fake Social Proof entfernt** (ProductModal: "🔥 N sold in last X hours" war `Math.random()`).
+7. **Produktseite serverseitig angereichert**: Related-Produkte, "How to order", Guide-Teaser, Breadcrumb über Kategorie. `ProductDetailClient.tsx` → `ProductGallery.tsx` + `RecentlyViewed.tsx`.
+8. `not-found.tsx`, neue `llms.txt`, Header-Nav "Categories", Footer als Server-Komponente mit Kategorie-/Outfit-/Tutorial-Links.
+
+### Trade-offs
+- Kurzfristig verschwinden ~7.200 URLs aus dem Index — gewollt.
+- `/categories` und `sitemap.xml` sind statisch (ISR 1h/1d); ohne DB-Zugriff beim lokalen Build werden Counts leer gebaut und erst nach Revalidate gefüllt.
+- `/categories/[slug]` ist dynamisch (searchParams) → DB-Query pro Request.
