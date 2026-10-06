@@ -16,8 +16,8 @@ export const LITBUY_PRODUCT_COUNT = "10,000+";
 // goes to the database site. Here we target informational + outfit + tutorial
 // intent.
 export const LITBUY_HERO = {
-  heading: "LitBuy Reps Guide 2026",
-  subheading: "Outfits, Tutorials & Curated Finds",
+  heading: "LitBuy Spreadsheet 2026",
+  subheading: "Finds, Outfits & Ordering Guide",
   lede:
     "The editorial companion to the LitBuy Spreadsheet. Outfit guides, step-by-step tutorials and curated finds for shopping reps from Taobao, 1688 and Weidian — written for English-speaking shoppers in 2026.",
   primaryCtaLabel: "Browse Outfits",
@@ -54,7 +54,7 @@ export const LITBUY_HOW_TO_STEPS: Array<{ name: string; text: string }> = [
   },
   {
     name: "Open your shopping agent and paste the link",
-    text: "Log in to LitBuy (recommended — new users get a 70% shipping coupon), or any other supported agent such as PandaBuy, Kakobuy, CSSBuy, Sugargoo, Mulebuy or Allchinabuy. Open the agent's search or paste-link input and paste the LitBuy product URL. The agent will automatically fetch the product details, available sizes, colors and real-time pricing.",
+    text: "Log in to LitBuy (recommended — new accounts get a 40% coupon on the first international parcel), or any other supported agent such as PandaBuy, Kakobuy, CSSBuy, Sugargoo, Mulebuy or Allchinabuy. Open the agent's search or paste-link input and paste the LitBuy product URL. The agent will automatically fetch the product details, available sizes, colors and real-time pricing.",
   },
   {
     name: "Pick your size and color, add to cart and pay",
@@ -147,7 +147,7 @@ export const LITBUY_BRANDS_COPY = {
   heading: "Popular Brands in the LitBuy Spreadsheet",
   anchor: "litbuy-brands",
   lede:
-    "The LitBuy Spreadsheet covers every major streetwear, sneaker and luxury brand. Tap a brand below to see every LitBuy find we have indexed for it, all ready to order through LitBuy with a 70% shipping coupon for new users.",
+    "The LitBuy Spreadsheet covers every major streetwear, sneaker and luxury brand. Tap a brand below to see every LitBuy find we have indexed for it, all ready to order through LitBuy, where new accounts get 40% off the first international parcel.",
   topBrands: [
     "Nike",
     "Adidas",
@@ -298,9 +298,9 @@ export const LITBUY_SHIPPING_AGENTS = {
   agents: [
     {
       name: "LitBuy",
-      tagline: "Recommended for new users — 70% shipping coupon included",
+      tagline: "Recommended for new users: 40% off the first international parcel",
       body:
-        "LitBuy is the fastest and cheapest shopping agent for LitBuy Spreadsheet orders right now. Signing up through our link gives you a 70% shipping coupon on your first haul, which typically saves 20–40 euros on a normal-size parcel. LitBuy's warehouse takes detailed QC photos for free, supports every major shipping line and has responsive English-speaking support.",
+        "LitBuy is the fastest and cheapest shopping agent for LitBuy Spreadsheet orders right now. Signing up through our link puts LitBuy's new-account coupon in your account: 40% off the shipping of your first international parcel. LitBuy's warehouse takes detailed QC photos for free, supports every major shipping line and has responsive English-speaking support.",
     },
     {
       name: "PandaBuy",
@@ -346,7 +346,7 @@ export const LITBUY_ORDER_STEPS = {
     {
       title: "Sign up on LitBuy",
       body:
-        "Create a free LitBuy account using our invite link to unlock a 70% shipping coupon on your first haul. Download the LitBuy mobile app so you can manage QC photos on the go.",
+        "Create a free LitBuy account using our invite link; LitBuy adds its new-account coupon (40% off the first international parcel) to it. Download the LitBuy mobile app so you can manage QC photos on the go.",
       cta: "Sign Up Now",
       ctaType: "litbuy" as const,
     },
@@ -430,7 +430,7 @@ export const LITBUY_FAQ: Array<{ question: string; answer: string }> = [
   {
     question: "Which shopping agents work with the LitBuy Spreadsheet?",
     answer:
-      "Every major Chinese shopping agent works with LitBuy Spreadsheet links, because the links are raw Taobao, Weidian and 1688 URLs. The most popular options are LitBuy (our recommendation, 70% shipping coupon for new users), PandaBuy, Kakobuy, CSSBuy, Sugargoo, Mulebuy, Allchinabuy, Orientdig, Joyabuy and Loongbuy.",
+      "Every major Chinese shopping agent works with LitBuy Spreadsheet links, because the links are raw Taobao, Weidian and 1688 URLs. The most popular options are LitBuy (our recommendation, 40% off the first parcel for new accounts), PandaBuy, Kakobuy, CSSBuy, Sugargoo, Mulebuy, Allchinabuy, Orientdig, Joyabuy and Loongbuy.",
   },
   {
     question: "How often is the LitBuy Spreadsheet updated?",
@@ -450,7 +450,7 @@ export const LITBUY_FAQ: Array<{ question: string; answer: string }> = [
   {
     question: "Can I use the LitBuy Spreadsheet on LitBuy?",
     answer:
-      "Yes, absolutely. LitBuy is one of the best agents for LitBuy Spreadsheet orders. Copy any LitBuy link, paste it into the LitBuy search bar, pick your size and color, and the rest is handled for you. New LitBuy users who sign up via our invite link unlock a 70% shipping coupon on their first haul.",
+      "Yes, absolutely. LitBuy is one of the best agents for LitBuy Spreadsheet orders. Copy any LitBuy link, paste it into the LitBuy search bar, pick your size and color, and the rest is handled for you. New LitBuy accounts created through our invite link get LitBuy's new-account coupon: 40% off the shipping of the first international parcel.",
   },
   {
     question: "How do I search the LitBuy Spreadsheet by brand?",
@@ -465,7 +465,7 @@ export const LITBUY_FAQ: Array<{ question: string; answer: string }> = [
   {
     question: "What is the typical shipping cost and time from the LitBuy Spreadsheet?",
     answer:
-      "Shipping a LitBuy haul through LitBuy typically costs 8–15 € per kilogram depending on the shipping line you pick, and arrives at your door in 7–14 days. DHL Express is fastest (3–7 days, slightly more expensive). Budget ePacket is slowest (15–30 days) but the cheapest option. New LitBuy users unlock a 70% shipping coupon on their first haul.",
+      "Shipping a LitBuy haul through LitBuy typically costs 8–15 € per kilogram depending on the shipping line you pick, and arrives at your door in 7–14 days. DHL Express is fastest (3–7 days, slightly more expensive). Budget ePacket is slowest (15–30 days) but the cheapest option. New LitBuy accounts get 40% off the shipping of their first international parcel.",
   },
   {
     question: "Why use this site instead of the raw LitBuy Google Sheet?",
@@ -487,16 +487,16 @@ export const LITBUY_FAQ_SECTION = {
 export const LITBUY_CTA = {
   heading: "Ready to Build Your First LitBuy Haul?",
   body:
-    "Browse our full indexed product grid of the LitBuy Spreadsheet, sign up on LitBuy for a 70% shipping coupon, paste your links and ship your first haul this week. Everything you need to become a confident rep buyer — in one place.",
+    "Browse our full indexed product grid of the LitBuy Spreadsheet, sign up on LitBuy (new accounts get 40% off the first parcel's shipping), paste your links and ship your first haul this week. Everything you need to become a confident rep buyer — in one place.",
   primaryLabel: "Browse All LitBuy Finds",
   primaryHref: "/litbuy-spreadsheet",
-  secondaryLabel: "Claim 70% Shipping Coupon",
+  secondaryLabel: "Claim 40% Off Shipping",
 };
 
 // ----------------------- PAGE-LEVEL SEO CONSTANTS -----------------------
 
 export const LITBUY_PAGE = {
-  h1: "LitBuy Spreadsheet 2026 — The Complete Guide to Finds, Links & How to Buy",
+  h1: "LitBuy Spreadsheet 2026: Finds, Outfits and How to Order",
   breadcrumbs: [
     { name: "Home", href: "/" },
     { name: "LitBuy Spreadsheet", href: "/litbuy-spreadsheet" },

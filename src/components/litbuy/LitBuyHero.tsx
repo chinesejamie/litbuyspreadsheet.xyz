@@ -43,7 +43,7 @@ export default function LitBuyHero() {
 
           <CouponButton
             href={SITE_CONFIG.litbuyInvite}
-            label="70% Off Shipping"
+            label="40% Off Shipping"
             subLabel="LitBuy"
             external
             size="lg"

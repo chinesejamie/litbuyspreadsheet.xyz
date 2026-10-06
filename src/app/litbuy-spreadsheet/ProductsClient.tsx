@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Search } from "lucide-react";
 import { motion } from "framer-motion";
@@ -20,6 +20,9 @@ interface ProductsClientProps {
   /** Server-side counts for tab labels — rendered inline in SSR so they're
    * visible to Google without a client fetch. */
   counts: Record<string, number>;
+  /** Erste Seite, serverseitig geladen, damit das Grid im HTML steht. */
+  initialProducts?: Product[];
+  initialTotal?: number;
 }
 
 /**
@@ -29,7 +32,11 @@ interface ProductsClientProps {
  * The static tab nav + breadcrumb live in the server page.tsx so they
  * render in the initial HTML without a Suspense fallback.
  */
-export default function ProductsClient({ counts }: ProductsClientProps) {
+export default function ProductsClient({
+  counts,
+  initialProducts,
+  initialTotal = 0,
+}: ProductsClientProps) {
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -47,9 +54,13 @@ export default function ProductsClient({ counts }: ProductsClientProps) {
 
   const [sort, setSort] = useState("default");
   const [page, setPage] = useState(1);
-  const [products, setProducts] = useState<Product[]>([]);
-  const [total, setTotal] = useState(0);
-  const [loading, setLoading] = useState(true);
+  const hasInitial = !!initialProducts?.length;
+  const [products, setProducts] = useState<Product[]>(initialProducts ?? []);
+  const [total, setTotal] = useState(initialTotal);
+  const [loading, setLoading] = useState(!hasInitial);
+  // Beim ersten Mount stehen die Server-Produkte schon da: weder leeren noch neu laden.
+  const skipReset = useRef(hasInitial);
+  const skipFetch = useRef(hasInitial);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [recentlyViewed, setRecentlyViewed] = useState<number[]>([]);
 
@@ -62,6 +73,10 @@ export default function ProductsClient({ counts }: ProductsClientProps) {
 
   // Reset pagination + product list whenever the URL filters change.
   useEffect(() => {
+    if (skipReset.current) {
+      skipReset.current = false;
+      return;
+    }
     setPage(1);
     setProducts([]);
     window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
@@ -92,6 +107,10 @@ export default function ProductsClient({ counts }: ProductsClientProps) {
   }, [activeCategory, urlQuery, sort, page]);
 
   useEffect(() => {
+    if (skipFetch.current) {
+      skipFetch.current = false;
+      return;
+    }
     fetchProducts();
   }, [fetchProducts]);
 

@@ -10,6 +10,19 @@ import {
 import dbConnect from "@/lib/mongodb";
 import FindsProduct from "@/models/FindsProduct";
 import { CATEGORY_GUIDES } from "@/content/categories";
+import {
+  getFeaturedProducts,
+  getProductsByCategory,
+  type ProductLite,
+} from "@/lib/productFetcher";
+
+const ITEMS_PER_PAGE = 30;
+
+// Gleiche Form wie /api/products, damit ProductCard/ProductModal die
+// serverseitig geladenen Produkte unverändert lesen können.
+function toClientProduct(p: ProductLite) {
+  return { ...p, link: p.litbuyLink, brand: p.creatorName, subcategory: "" };
+}
 
 // ISR: refresh tab counts hourly so they stay close to reality without
 // hitting the DB on every request.
@@ -105,6 +118,23 @@ export default async function ProductsPage({
     ? category
     : "All";
 
+  // Erste Seite serverseitig laden: ohne Produkte und H1 im HTML wertete
+  // Google die Seite als Soft 404. Bei einer Suche lädt der Client.
+  let initialProducts: ReturnType<typeof toClientProduct>[] | undefined;
+  let initialTotal = 0;
+  if (!q) {
+    if (activeName === "All") {
+      initialProducts = (await getFeaturedProducts(ITEMS_PER_PAGE)).map(toClientProduct);
+      initialTotal = counts.All ?? 0;
+    } else {
+      const res = await getProductsByCategory(activeName, { limit: ITEMS_PER_PAGE });
+      initialProducts = res.products.map(toClientProduct);
+      initialTotal = res.total;
+    }
+    if (initialProducts.length === 0) initialProducts = undefined;
+  }
+  const totalFinds = counts.All ?? 0;
+
   return (
     <>
       {/* Sticky category bar — real `<Link>`s so Google can crawl every
@@ -158,7 +188,23 @@ export default async function ProductsPage({
         </div>
       </div>
 
-      <ProductsClient counts={counts} />
+      <header className="max-w-6xl mx-auto px-5 pt-8">
+        <h1 className="font-mono text-2xl sm:text-3xl font-bold uppercase tracking-tight">
+          LitBuy <span className="text-accent">Spreadsheet</span>
+          {activeName !== "All" ? `: ${activeName}` : ""}
+        </h1>
+        <p className="text-text-secondary text-sm leading-relaxed mt-3 max-w-2xl">
+          {totalFinds > 0 ? `${totalFinds.toLocaleString("en-US")} finds` : "Finds"} from
+          Taobao, Weidian and 1688, sorted by category. Every link opens the
+          listing on LitBuy with the seller&rsquo;s photos and size chart.
+        </p>
+      </header>
+
+      <ProductsClient
+        counts={counts}
+        initialProducts={initialProducts}
+        initialTotal={initialTotal}
+      />
 
       {/* Serverseitig gerenderte Links auf die Kategorie-Guides — die
           indexierbaren Seiten der Domain brauchen interne Links aus dem

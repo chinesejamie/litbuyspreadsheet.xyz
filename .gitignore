@@ -11,3 +11,5 @@ build/
 *.pem
 *.key
 .DS_Store
+
+.claude/history/

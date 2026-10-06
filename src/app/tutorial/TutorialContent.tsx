@@ -9,7 +9,7 @@ import CouponButton from "@/components/CouponButton";
 const STEPS = [
   {
     title: "Signup on LitBuy",
-    desc: "Create a LitBuy Account to get 70% Shipping Coupons and download the LitBuy App.",
+    desc: "Create a LitBuy account to get LitBuy's new-account shipping coupon (40% off your first international parcel) and download the LitBuy app.",
     type: "signup" as const,
   },
   {
@@ -68,7 +68,7 @@ export default function TutorialContent() {
                   <CouponButton
                     href={SITE_CONFIG.litbuyInvite}
                     label="Sign Up on LitBuy"
-                    subLabel="70% Off"
+                    subLabel="40% Off Shipping"
                     external
                   />
                 )}

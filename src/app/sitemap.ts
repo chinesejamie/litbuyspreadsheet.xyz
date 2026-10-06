@@ -4,6 +4,7 @@ import { getDescribedProducts } from "@/lib/productFetcher";
 import {
   isIndexableProduct,
   MIN_INDEXABLE_DESCRIPTION_CHARS,
+  PRODUCT_PAGES_INDEXABLE,
 } from "@/lib/productQuality";
 import { OUTFIT_GUIDES } from "@/content/outfits";
 import { TUTORIAL_PAGES } from "@/content/tutorials";
@@ -49,7 +50,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // Produktseiten nur, wenn sie die Qualitätsregel erfüllen (echte
   // Beschreibung, zugeordnete Kategorie, Bild). Alles andere ist noindex.
-  const described = await getDescribedProducts(MIN_INDEXABLE_DESCRIPTION_CHARS);
+  const described = PRODUCT_PAGES_INDEXABLE
+    ? await getDescribedProducts(MIN_INDEXABLE_DESCRIPTION_CHARS)
+    : [];
   const seen = new Set<string>();
   const productRoutes: MetadataRoute.Sitemap = [];
   for (const { product, updatedAt } of described) {

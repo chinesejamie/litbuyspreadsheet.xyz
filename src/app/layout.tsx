@@ -11,7 +11,7 @@ import { SITE_URL } from "@/lib/seo";
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "LitBuy Reps Guide 2026 — Outfits, Tutorials & Curated Finds",
+    default: "LitBuy Spreadsheet 2026 — Finds, Outfits & Ordering Guide",
     template: "%s | LitBuy Reps Guide",
   },
   icons: {

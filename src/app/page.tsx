@@ -10,9 +10,9 @@ export const revalidate = 3600;
 
 export async function generateMetadata(): Promise<Metadata> {
   return generatePageMetadata({
-    title: "LitBuy Reps Guide 2026 — Outfits, Tutorials & Curated Finds",
+    title: "LitBuy Spreadsheet 2026 — Finds, Outfits & Ordering Guide",
     description:
-      "The editorial guide to shopping reps in 2026: outfit galleries, step-by-step ordering tutorials, agent comparisons and curated finds from the LitBuy Spreadsheet.",
+      "The LitBuy Spreadsheet for 2026: curated finds from Taobao, Weidian and 1688, outfit galleries and step-by-step ordering tutorials. Independent and free to browse.",
     path: "/",
     canonicalPath: "/",
     keywords: LITBUY_KEYWORDS,
